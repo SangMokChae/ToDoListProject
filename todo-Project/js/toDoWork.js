@@ -1,166 +1,143 @@
-const doForm = document.querySelector("#formToDos");
-const doInput = doForm.querySelector("#inputToDo");
-const leftList = document.querySelector("#left-list");
-const doneList = document.querySelector("#done-list");
+const toDoForm = document.querySelector("#formToDos"),
+  toDoInput = toDoForm.querySelector("input"),
+  pendingList = document.querySelector("#pending-list"),
+  finishList = document.querySelector("#finish-list");
 
-const LEFT_LS = "leftDo";
-const DONE_LS = "doneDo";
+const PENDING_LS = 'PENDING';
+const FINISH_LS = 'FINISHED';
 
-let leftArray = [];
-let doneArray = [];
-
-let Id = 1;
-
-// SAVE
-function saveLeftList() {
-  localStorage.setItem(LEFT_LS, JSON.stringify(leftArray));
-}
-
-function saveDoneList() {
-  localStorage.setItem(DONE_LS, JSON.stringify(doneArray));
-}
+let toDos = [];
+let finishedToDos = [];
 
 // DELETE
-function deleteLeft(evt) {
-  const left_li = evt.target.parentNode;
-  leftList.removeChild(left_li);
-  const cleanLeft = leftArray.filter(function(leftToDo) {
-    return leftToDo.id !== parseInt(left_li.id);
-  });
-  leftArray = cleanLeft;
-  saveLeftList();
+function deleteToDo(evt) {
+  const li = evt.path[1];
+  pendingList.removeChild(li);
+  const cleanToDos = toDos.filter((toDo) => toDo.id !== parseInt(li.id));
+  toDos = cleanToDos;
+  saveLs(PENDING_LS, toDos);
 }
 
-function deleteDone(evt) {
-  const done_li = evt.target.parentNode;
-  doneList.removeChild(done_li);
-  const cleanDone = doneArray.filter(function(doneToDo) {
-    return doneToDo.id !== parseInt(done_li.id);
-  });
-  doneArray = cleanDone;
-  saveDoneList();
+function deleteFinish(evt) {
+  const li = evt.path[1];
+  finishList.removeChild(li);
+  const cleanFinish = finishedToDos.filter((finish) => finish.id !== parseInt(li.id));
+  finishedToDos = cleanFinish;
+  saveLs(FINISH_LS, finishedToDos);
+}
+
+// SAVE
+function saveLs(ls, data) {
+  localStorage.setItem(ls, JSON.stringify(data));
 }
 
 // MOVE
-function finishToDo(evt) {
-  const left_li = evt.target.parentNode;
-  const left_text = evt.target.parentNode.firstChild.innerText;
-  leftList.removeChild(left_li);
-  const cleanLeft = leftArray.filter(function(leftToDo) {
-    return leftToDo.id !== parseInt(left_li.id);
-  });
-  leftArray = cleanLeft;
-  paintDone(left_text);
-  saveLeftList();
+function getContent(evt) {
+  const li = evt.path[1];
+  const text = li.querySelector('span').innerText;
+  return text;
 }
 
-function restoreTodo(evt) {
-  const done_li = evt.target.parentNode;
-  const done_text = evt.target.parentNode.firstChild.innerText;
-  doneList.removeChild(done_li);
-  const cleanDone = doneArray.filter(function(doneToDo) {
-    return doneToDo.id !== parseInt(done_li.id);
-  });
-  doneArray = cleanDone;
-  paintLeft(done_text);
-  saveDoneList();
+function goToFinish(evt) {
+  const doValue = getContent(evt);
+  deleteToDo(evt);
+  paintFinish(doValue);
 }
 
-// PAINT
-function paintLeft(text) {
-  const left_span = document.createElement("span");
-  const left_li = document.createElement("li");
-  const left_delBtn = document.createElement("button");
-  const left_donBtn = document.createElement("button");
-  const newId = Id;
+function returnToDo(evt) {
+  const doValue = getContent(evt);
+  deleteFinish(evt);
+  paintPending(doValue);
+}
 
-  left_span.innerText = text;
-  left_donBtn.innerText = "DONE";
-  left_donBtn.className = 'btn btn-success btn-sm';
-  left_donBtn.addEventListener("click", finishToDo);
-  left_delBtn.innerText = "DELETE";
-  left_delBtn.className = 'btn btn-danger btn-sm';
-  left_delBtn.addEventListener("click", deleteLeft);
-  left_li.appendChild(left_span);
-  left_li.appendChild(left_donBtn);
-  left_li.appendChild(left_delBtn);
-  left_li.id = newId;
-  leftList.appendChild(left_li);
-  const leftObj = {
+
+// PRINT
+function paintPending(text, id = null) {
+  const li = document.createElement("li");
+  const delBtn = document.createElement("button");
+  const doneBtn = document.createElement("button");
+  const span = document.createElement("span");
+  let newId = toDos.length + 1;
+
+  if (id !== null) {
+    newId = id;
+  }
+  delBtn.innerHTML = 'X';
+  delBtn.className = "btn btn-danger btn-sm";
+  delBtn.addEventListener('click', deleteToDo);
+  doneBtn.innerHTML = 'Go';
+  doneBtn.className = "btn btn-success btn-sm";
+  doneBtn.addEventListener('click', goToFinish);
+  span.innerText = text;
+  li.appendChild(span);
+  li.appendChild(doneBtn);
+  li.appendChild(delBtn);
+  li.id = newId;
+  pendingList.appendChild(li);
+  const toDoObj = {
     text: text,
     id: newId
   };
-  Id += 1;
-  leftArray.push(leftObj);
-  saveLeftList();
+  toDos.push(toDoObj);
+  saveLs(PENDING_LS, toDos);
 }
 
-function paintDone(text) {
-  const done_span = document.createElement("span");
-  const done_li = document.createElement("li");
-  const done_delBtn = document.createElement("button");
-  const done_donBtn = document.createElement("button");
-  const newId = Id;
+function paintFinish(text, id = null) {
+  const li = document.createElement("li");
+  const delBtn = document.createElement("button");
+  const rtnBtn = document.createElement("button");
+  const span = document.createElement("span");
+  let newId = finishedToDos.length + 1;
 
-  done_span.innerText = text;
-  done_donBtn.innerText = "RESTORE";
-  done_donBtn.className = 'btn btn-primary btn-sm';
-  done_donBtn.addEventListener("click", restoreTodo);
-  done_delBtn.innerText = "DELETE";
-  done_delBtn.className = 'btn btn-danger btn-sm';
-  done_delBtn.addEventListener("click", deleteDone);
-  done_li.appendChild(done_span);
-  done_li.appendChild(done_donBtn);
-  done_li.appendChild(done_delBtn);
-  done_li.id = newId;
-  doneList.appendChild(done_li);
-  const doneObj = {
+  if (id !== null) {
+    newId = id;
+  }
+  delBtn.innerHTML = 'X';
+  delBtn.className = "btn btn-danger btn-sm";
+  delBtn.addEventListener('click', deleteFinish);
+  rtnBtn.innerHTML = 'Re';
+  rtnBtn.className = "btn btn-primary btn-sm";
+  rtnBtn.addEventListener('click', returnToDo);
+  span.innerText = text;
+  li.appendChild(span);
+  li.appendChild(rtnBtn);
+  li.appendChild(delBtn);
+  li.id = newId;
+  finishList.appendChild(li);
+  const finishedObj = {
     text: text,
     id: newId
   };
-  Id += 1;
-  doneArray.push(doneObj);
-  saveDoneList();
+  finishedToDos.push(finishedObj);
+  saveLs(FINISH_LS, finishedToDos);
 }
 
-// SUBMIT
-function writeToDo(evt) {
+// SUBMIT EVENT
+function startEvent(evt) {
   evt.preventDefault();
-  const currentValue = doInput.value;
-  paintLeft(currentValue);
-  doInput.value = '';
+  const currentValue = toDoInput.value;
+  paintPending(currentValue);
+  toDoInput.value = '';
 }
-
 
 // LOAD
-function loadDoIt() {
-  const loadedLeftList = localStorage.getItem(LEFT_LS);
-  const loadedDoneList = localStorage.getItem(DONE_LS);
-  if(loadedLeftList !== null && loadedDoneList === null) {
-    const parsedLeft = JSON.parse(loadedLeftList);
-    parsedLeft.forEach(function(leftToDo) {
-      paintLeft(leftToDo.text);
-    });
-  } else if (loadedLeftList === null && loadedDoneList !== null) {
-    const parsedDone = JSON.parse(loadedLeftList);
-    parsedDone.forEach(function(doneToDo) {
-      paintDone(doneToDo.text);
-    });
-  } else if (loadedLeftList !== null && loadedDoneList !== null) {
-    const parsedLeft = JSON.parse(loadedLeftList);
-    const parsedDone = JSON.parse(loadedLeftList);
-    parsedLeft.forEach(function(leftToDo) {
-      paintLeft(leftToDo.text);
-    });
-    parsedDone.forEach(function(doneToDo) {
-      paintDone(doneToDo.text);
-    });
+function loadToDos() {
+  const loadedPendings = localStorage.getItem(PENDING_LS);
+  const loadedFinished = localStorage.getItem(FINISH_LS);
+  if (loadedPendings !== null) {
+    const parsedToDos = JSON.parse(loadedPendings);
+    parsedToDos.forEach((toDo) => paintPending(toDo.text, toDo.id));
+  }
+  if (loadedFinished !== null) {
+    const parsedToDos = JSON.parse(loadedFinished);
+    parsedToDos.forEach((toDo) => paintFinish(toDo.text, toDo.id));
   }
 }
 
 // INIT
 function init() {
-  loadDoIt();
-  doForm.addEventListener("submit", writeToDo);
+  loadToDos();
+  toDoForm.addEventListener('submit', startEvent);
 }
+
 init();

@@ -1,7 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;600;700;800&display=swap");
 @import "reset.css";
 
-@import "header.css";
 @import "clock.css";
 
 #body {
@@ -42,11 +41,11 @@
   background-color: white;
 }
 
-.left-top {
+.pending-top {
   color: #ffffb9;
 }
 
-.done-top {
+.finish-top {
   color: #b8fffe;
 }
 
@@ -62,6 +61,15 @@
   border: 3px solid white;
   box-shadow: 2px 2px 5px #bebebe, 5px 4px 10px rgba(0, 0, 0, 0.5);
   border-radius: 15px;
+}
+
+.text-cloud {
+  font-weight: 700;
+  font-size: 30px;
+  text-align: center;
+  margin-top: 25px;
+  color: azure;
+  text-shadow: 1px 1px 3px gray;
 }
 
 .text-icon {
@@ -83,16 +91,41 @@
   display: none;
 }
 
-.left {
-  background: #ffffb9;
+@keyframes shake {
+  0% {
+    transform: translateY(-8px);
+  }
+  25% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+  75% {
+    transform: translateY(0px);
+  }
+  100% {
+    transform: translateY(-8px);
+  }
 }
 
-.done {
+.name {
+  animation: shake 2.5s linear infinite;
+}
+
+.pending {
+  background: #ffffb9;
+  animation: shake 2.5s 0.3s linear infinite;
+}
+
+.finish {
   background: #b8fffe;
+  animation: shake 2.5s 0.6s linear infinite;
 }
 
 .toDo {
   background: #b0b4ff;
+  animation: shake 2.5s 0.9s linear infinite;
 }
 
 .toDo-title {
@@ -100,17 +133,27 @@
   font-size: 20px;
 }
 
-/* left-list */
-#left-list,
-#done-list {
+/* pending-list */
+#pending-list,
+#finish-list {
   width: auto;
   height: 340px;
   border-radius: 15px;
   background: white;
   overflow-y: scroll;
+  padding: 2px 10px;
+  color: rgb(151, 150, 150);
+  font-weight: 600;
+}
+
+#pending-list {
+  text-shadow: 0px 1.5px 1px #ffffb9, 0 1px 1px #ffffb9;
+}
+
+#finish-list {
+  text-shadow: 0px 1.5px 1px #b8fffe, 0 1px 1px #b8fffe;
 }
 
 .btn-sm {
-  direction: ltr;
-  margin: 5px 5px 5px 15px;
+  margin: 5px 3px;
 }
