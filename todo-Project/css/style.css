@@ -1,39 +1,116 @@
-@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;600;700;800&display=swap");
 @import "reset.css";
 
-/* 참조링크 */
-/* https://hijadetumadre.com/blogs/news/muy-busy-desktop-wallpaper */
-/* https://www.uplabs.com/posts/mobile-app-design-for-todo-list */
+@import "header.css";
+@import "clock.css";
 
-
-body {
+#body {
+  background: #efefef;
   box-sizing: border-box;
-  font-family: 'Rubik', sans-serif;
+  font-family: "Rubik", sans-serif;
 }
 
 /* header */
+#header {
+  padding: 20px;
+}
+
 .js-weather {
   direction: rtl;
+  font-size: 30px;
+  color: #8394ca;
 }
 
 /* main */
-.col-3 {
-  margin: 0 4%;
-  height: 400px;
-  background-color: pink;
-  border-radius: 15px;
-}
-
-.list {
-  background: #a9fffe;
-}
-
-.toDo {
-  background: #9499ff;
+#main {
+  margin: 100px 0px;
 }
 
 .box-top {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 140%;
+  font-weight: 600;
+  color: #ffcfdb;
+  text-shadow: 0.5px 0.5px gray;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+  margin-bottom: 20px;
   width: 100%;
   height: 80px;
   background-color: white;
+}
+
+.left-top {
+  color: #ffffb9;
+}
+
+.done-top {
+  color: #b8fffe;
+}
+
+.toDo-top {
+  font-size: larger;
+  color: #b0b4ff;
+}
+
+.col-2 {
+  margin: 0 4%;
+  height: 480px;
+  background-color: #ffcfdb;
+  border: 3px solid white;
+  box-shadow: 2px 2px 5px #bebebe, 5px 4px 10px rgba(0, 0, 0, 0.5);
+  border-radius: 15px;
+}
+
+.text-icon {
+  position: relative;
+}
+
+.cloud-icon {
+  position: relative;
+  width: 100%;
+}
+
+.hello-emoji {
+  margin-top: 50px;
+  width: 100%;
+  height: 220px;
+}
+
+.emoji-hidden {
+  display: none;
+}
+
+.left {
+  background: #ffffb9;
+}
+
+.done {
+  background: #b8fffe;
+}
+
+.toDo {
+  background: #b0b4ff;
+}
+
+.toDo-title {
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+/* left-list */
+#left-list,
+#done-list {
+  width: auto;
+  height: 340px;
+  border-radius: 15px;
+  background: white;
+  overflow-y: scroll;
+}
+
+.btn-sm {
+  direction: ltr;
+  margin: 5px 5px 5px 15px;
 }

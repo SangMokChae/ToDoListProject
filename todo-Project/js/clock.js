@@ -1,18 +1,15 @@
-const clock = document.querySelector(".header-top__options"),
-  time = clock.querySelector("div");
+const hr = document.querySelector('#hr'),
+  mn = document.querySelector('#mn'),
+  sc = document.querySelector('#sc');
+const deg = 6;
 
-const loadTimes = () => {
-  const date = new Date();
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-  const seconds = date.getSeconds();
-  const ampm = hours >= 12 ? 'Pm' : 'Am';
-  time.innerText = `${ampm} ${hours < 10 ? `0${hours}`: hours} : ${minutes < 10 ? `0${minutes}` : minutes} : ${seconds < 10 ? `0${seconds}` : seconds}`;
-}
+setInterval(() => {
+  let day = new Date();
+  let hh = day.getHours() * 30;
+  let mm = day.getMinutes() * deg;
+  let ss = day.getSeconds() * deg;
 
-const init = () => {
-  loadTimes();
-  setInterval(loadTimes, 1000);
-}
-
-init();
+  hr.style.transform = `rotateZ(${hh+(mm/12)}deg)`;
+  mn.style.transform = `rotateZ(${mm}deg)`;
+  sc.style.transform = `rotateZ(${ss}deg)`;
+})
